@@ -7,17 +7,40 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly QlbanVaLiContext _context;
+
+        public HomeController(QlbanVaLiContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            using var context = new QlbanVaLiContext();
-            var valiProducts = (from sp in context.TDanhMucSps.AsNoTracking()
-                                join loai in context.TLoaiSps.AsNoTracking()
-                                    on sp.MaLoai equals loai.MaLoai
-                                where loai.Loai != null && loai.Loai.Trim() == "Va li"
-                                select sp)
+            return View();
+        }
+
+        public IActionResult GetLoai()
+        {
+            var loai = _context.TLoaiSps
+                .AsNoTracking()
+                .Select(x => new
+                {
+                    maLoai = x.MaLoai,
+                    loai = x.Loai
+                })
                 .ToList();
 
-            return View(valiProducts);
+            return Json(loai);
+        }
+
+        public IActionResult GetProducts(string maLoai)
+        {
+            var products = _context.TDanhMucSps
+                .AsNoTracking()
+                .Where(x => x.MaLoai == maLoai)
+                .ToList();
+
+            return PartialView("_ProductList", products);
         }
 
         public IActionResult Privacy()

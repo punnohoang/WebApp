@@ -149,6 +149,18 @@ body {
     list-style: none;
     width:11em;
 }
+.nav li {
+	position: relative;
+}
+.nav li ul {
+	display: none;
+	position: absolute;
+	background: #fff;
+	padding: 10px;
+}
+.nav li:hover > ul {
+	display: block;
+}
 .nav a {
     padding:16px 33px;
     color:#ffb29f;
